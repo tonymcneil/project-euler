@@ -1,0 +1,2 @@
+language = "bash"
+run = ".config/bb --classpath src main.clj"
