@@ -1,15 +1,14 @@
 (ns prob003
- (:require [lib.bitbag :refer :all]))
+  (:require [lib.bitbag :refer :all]))
 
-(quote "Largest prime factor 
+(quote "Largest prime factor
 Problem 3
 The prime factors of 13195 are 5, 7, 13 and 29.
 
 What is the largest prime factor of the number 600851475143 ?
 
-
-primes...
-https://en.m.wikipedia.org/wiki/Sieve_of_Eratosthenes
+NOTES:
+Primes: https://en.m.wikipedia.org/wiki/Sieve_of_Eratosthenes
        
 Create a list of consecutive integers from 2 through n: (2, 3, 4, ..., n).
 Initially, let p equal 2, the smallest prime number.
@@ -25,19 +24,18 @@ When the algorithm terminates, the numbers remaining not marked in the list are 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; https://stackoverflow.com/a/22668959/4908704
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defn sieve [n]
-  "Returns a BitSet with bits set for each prime up to n"
-  (let [bs (new java.util.BitSet n)]
-    (.flip bs 2 n)
-    (doseq [i (range 4 n 2)] (.clear bs i))
-    (doseq [p (range 3 (Math/ceil (Math/sqrt n)))]
-      (if (.get bs p)
-        (doseq [q (range (* p p) n (* 2 p))] (.clear bs q))))
-    bs))
+         (defn sieve [n]
+           "Returns a BitSet with bits set for each prime up to n"
+           (let [bs (new java.util.BitSet n)]
+             (.flip bs 2 n)
+             (doseq [i (range 4 n 2)] (.clear bs i))
+             (doseq [p (range 3 (Math/ceil (Math/sqrt n)))]
+               (if (.get bs p)
+                 (doseq [q (range (* p p) n (* 2 p))] (.clear bs q))))
+             bs))
 
-(def theBitSet (seive 6))
-(take-while #(not (= % -1)) (iterate #(.nextSetBit theBitSet (inc %)) 2))
-))
+         (def theBitSet (seive 6))
+         (take-while #(not (= % -1)) (iterate #(.nextSetBit theBitSet (inc %)) 2))))
 
 (quote (do
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,7 +52,7 @@ When the algorithm terminates, the numbers remaining not marked in the list are 
 ;; 					bits.set(j, false);
 ;; 		return bits.cardinality() - 2;
 ;; 	}
-))
+         ))
 
 
 
@@ -87,4 +85,3 @@ When the algorithm terminates, the numbers remaining not marked in the list are 
 ;;  #(.nextSetBit theBitSet (inc %)) 2))
 
 ;; ))
- 
