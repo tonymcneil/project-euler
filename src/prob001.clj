@@ -7,20 +7,14 @@ If we list all the natural numbers below 10 that are multiples of 3 or 5, we get
 
 Find the sum of all the multiples of 3 or 5 below 1000.")
 
-; no external deps
-(def ans-a
- (reduce +
-  (set 
-   (concat
-     (range 0 1000 3)
-     (range 0 1000 5)))))
+(defn multiples-between [start end targets]
+(set
+   (apply concat
+     (map 
+      #(range start end %) targets))))
 
-; a slightly more terse solution using clojure.set library for union
-(def ans-b
- (reduce +
-  (clojure.set/union
-   (range 0 1000 3)
-   (range 0 1000 5))))
+(def ans-a (reduce + 
+  (multiples-between 0 1000 [3 5])))
 
-(println (str *ns* ":" ans-a))
-;; (println (str *ns* ":" ans-b))
+(time
+ (println (str *ns* ":" ans-a)))

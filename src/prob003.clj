@@ -1,4 +1,5 @@
-(ns prob003)
+(ns prob003
+ (:require [lib.bitbag :refer :all]))
 
 (quote "Largest prime factor 
 Problem 3
@@ -19,102 +20,71 @@ Find the smallest number in the list greater than p that is not marked. If there
 When the algorithm terminates, the numbers remaining not marked in the list are all the primes below n.
 ")
 
-(defn primes-to [pmax]
-(loop
-  [p 2
-   ps (into [] (range 0 (inc pmax)))]
-(if (nil? p)
-  (remove nil? (drop 2 ps))
-(recur
- (->> ps
-         (drop (inc p))
-         (remove nil?)
-         first)
-(let [nils (rest (range p (inc pmax) p))]
-  (if (empty? nils) ps
-    (apply assoc ps
-   (interleave 
-    nils
-    (repeat nil)))))
- 
- ))))
-
-(quote
-(println
- ;; (def pidxs
-  #?(:clj ^java.lang.Double 0
-      :cljs 0)))
-(println
- (java.lang.Double/MAX_VALUE))
-
-;; (println (last (primes-to 10000)))
-;; (println (str *ns* ":" ))
-;; (println (persistent! (transient (into [] (range 3)))))
-
-;; https://stackoverflow.com/a/7941430
-(quote (do
-(def certainty 5)
-
-(defn prime? [n]
-      (.isProbablePrime (BigInteger/valueOf n) certainty))
-
-  (println (last
-(concat [2] (take 1000
-   (filter prime? 
-      (take-nth 2 
-         (range 1 10000)))))
-))))
-
-;; https://stackoverflow.com/a/7625207
-(quote (do
-(defn gen-primes "Generates an infinite, lazy sequence of prime numbers"
-  []
-  (letfn [(reinsert [table x prime]
-             (update-in table [(+ prime x)] conj prime))
-          (primes-step [table d]
-             (if-let [factors (get table d)]
-               (recur (reduce #(reinsert %1 d %2) (dissoc table d) factors)
-                      (inc d))
-               (lazy-seq (cons d (primes-step (assoc table (* d d) (list d))                                 (inc d))))))]
-    (primes-step {} 2)))
-
-(take 5 (gen-primes))
-))
 
 (quote (do
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://stackoverflow.com/a/22668959/4908704
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn sieve [n]
   "Returns a BitSet with bits set for each prime up to n"
   (let [bs (new java.util.BitSet n)]
     (.flip bs 2 n)
     (doseq [i (range 4 n 2)] (.clear bs i))
-    (doseq [p (range 3 (Math/sqrt n))]
+    (doseq [p (range 3 (Math/ceil (Math/sqrt n)))]
       (if (.get bs p)
         (doseq [q (range (* p p) n (* 2 p))] (.clear bs q))))
     bs))
 
-;; (do (sieve 1e6) nil)
-(def theBitSet (sieve 6))
-
+(def theBitSet (seive 6))
 (take-while #(not (= % -1)) (iterate #(.nextSetBit theBitSet (inc %)) 2))
-
 ))
 
-;; my initial solutions
 (quote (do
-; faster nilling impl
-  (loop [nils (vec (rest (range p (inc pmax) p)))
-         nilled-ps ps]
-    (if (empty? nils)
-      nilled-ps
-(recur (rest nils)
-       (assoc nilled-ps 
-              (first nils) nil))))
-; slower nilling impl
-(let [nils (rest (range p (inc pmax) p))]
-  (if (empty? nils) ps
-    (apply assoc ps
-   (interleave 
-    nils
-    (repeat nil)))))
- ))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://gist.github.com/dukky/6265182
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; public static int sieve(int n) {
+;; 		BitSet bits = new BitSet(n+1);
+;; 		bits.clear();
+;; 		bits.flip(0, n);
+;; 		double csqrtn = Math.ceil(Math.sqrt(n));
+;; 		for (int i = 2; i < csqrtn; ++i) 
+;; 			if (bits.get(i)) 
+;; 				for (int j = i * i; j < n; j += i) 
+;; 					bits.set(j, false);
+;; 		return bits.cardinality() - 2;
+;; 	}
+))
+
+
+
+;; (quote (do
+;; (defn sieve [n]
+;;   "Returns a bit-bag with bits set for each prime up to n"
+;;   (let [bb (bit-bag n)]
+;;     (bit-flip! bb 2 n)
+;;     (doseq [i (range 3 (Math/ceil (Math/sqrt n)))]
+;;       (if (bit-set? bb i)
+;;         (doseq [j (range (* i i) n)]
+;;           (bit-clear! bb j)))
+;;     bb)))
+
+;; (do (sieve 1e6) nil)
+
+;; (println "###############################")
+;; (println (range 4 (inc 9) 2))
+;; (println "###############################")
+
+;; (let [n 9
+;;       bb (sieve n)]
+;;   (doseq [bit (range 1 (inc n))]
+;;     (println (str "bit-set?:" bit ":" (bit-set? bb bit)))
+;;     )
+;;     )
+
+;; (take-while #(not (= % -1)) 
+;; (iterate 
+;;  #(.nextSetBit theBitSet (inc %)) 2))
+
+;; ))
  
