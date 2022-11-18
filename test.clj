@@ -1,6 +1,6 @@
 (ns test
- (:require [clojure.test :as t]
-           [lib.bitbag-tests]))
+  (:require [clojure.test :as t]
+            [lib.bitbag-tests]))
 
 (def test-results
   (t/run-tests 'lib.bitbag-tests))
